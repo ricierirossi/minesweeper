@@ -1,0 +1,36 @@
+<template>
+  <div class="container">
+    <p>💣 10</p>
+    <p>😄</p>
+    <div class="status">
+      <p>⏳ 01:32</p>
+      <p>84 actions</p>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  setup() {
+    return {};
+  },
+};
+</script>
+<style scoped>
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+
+  width: 100%;
+
+  background-color: #f3f6f4;
+}
+
+.status {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+</style>
