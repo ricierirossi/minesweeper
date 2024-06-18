@@ -4,17 +4,15 @@
     <p>😄</p>
     <div class="status">
       <p>⏳ 01:32</p>
-      <p>84 actions</p>
+      <p>{{ actionsCounter }} actions</p>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  setup() {
-    return {};
-  },
-};
+<script setup>
+defineProps({
+  actionsCounter: Number,
+});
 </script>
 <style scoped>
 .container {
@@ -22,9 +20,7 @@ export default {
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-
   width: 100%;
-
   background-color: #f3f6f4;
 }
 
