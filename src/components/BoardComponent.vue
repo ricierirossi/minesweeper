@@ -16,9 +16,7 @@ div {
   display: flex;
   flex-direction: row;
   justify-content: center;
-
   width: 100%;
-
   background-color: #303030;
   color: whitesmoke;
 }
