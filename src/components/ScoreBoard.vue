@@ -3,7 +3,11 @@
     <p>💣 10</p>
     <p>😄</p>
     <div class="status">
-      <p>⏳ 01:32</p>
+      <p>
+        ⏳ {{ time.hours.toString().padStart(2, "0") }}:{{
+          time.minutes.toString().padStart(2, "0")
+        }}:{{ time.seconds.toString().padStart(2, "0") }}
+      </p>
       <p>{{ actionsCounter }} actions</p>
     </div>
   </div>
@@ -12,6 +16,7 @@
 <script setup>
 defineProps({
   actionsCounter: Number,
+  time: Object,
 });
 </script>
 <style scoped>
