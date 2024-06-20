@@ -1,4 +1,5 @@
 <template>
+  <h1>Minesweeper</h1>
   <div class="container">
     <p>💣 10</p>
     <p>😄</p>
@@ -20,6 +21,13 @@ defineProps({
 });
 </script>
 <style scoped>
+h1 {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  background-color: #303030;
+  color: whitesmoke;
+}
 .container {
   display: flex;
   flex-direction: row;
