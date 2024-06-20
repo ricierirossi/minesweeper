@@ -2,19 +2,47 @@
   <div class="cells-container">
     <div
       class="cell"
-      v-for="cell in numberOfCells"
-      @contextmenu.prevent="$emit('countActionsEvent')"
-      @click="$emit('countActionsEvent')"
-    ></div>
+      v-for="(cell, index) of cells"
+      :key="index"
+      @click="handleLeftClick(cell)"
+      @contextmenu.prevent="handleRightClick(cell)"
+    >
+      {{ cell.flagged ? "🚩" : "" }}
+    </div>
   </div>
 </template>
 
 <script setup>
 defineProps({
   numberOfCells: Number,
+  cells: Array,
 });
 
-defineEmits(["countActionsEvent"]);
+const emit = defineEmits(["countActionsEvent", "startStopwatchEvent"]);
+
+function handleLeftClick(cell) {
+  emit("countActionsEvent");
+  emit("startStopwatchEvent");
+  revealCell(cell);
+}
+
+function revealCell(cell) {
+  if (!cell.revealed) {
+    cell.revealed = !cell.revealed;
+  }
+}
+
+function handleRightClick(cell) {
+  emit("countActionsEvent");
+  emit("startStopwatchEvent");
+  flagCell(cell);
+}
+
+function flagCell(cell) {
+  if (!cell.revealed) {
+    cell.flagged = !cell.flagged;
+  }
+}
 </script>
 
 <style scoped>
