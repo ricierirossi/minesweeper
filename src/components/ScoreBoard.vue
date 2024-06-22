@@ -2,7 +2,7 @@
   <h1>Minesweeper</h1>
   <div class="container">
     <p>💣 10</p>
-    <p>😄</p>
+    <p @click="resetBombs" style="cursor: pointer">😄</p>
     <div class="status">
       <p>
         ⏳ {{ time.hours.toString().padStart(2, "0") }}:{{
@@ -19,6 +19,12 @@ defineProps({
   actionsCounter: Number,
   time: Object,
 });
+
+const emit = defineEmits(["resetBombsEvent"]);
+
+function resetBombs() {
+  emit("resetBombsEvent");
+}
 </script>
 <style scoped>
 h1 {
