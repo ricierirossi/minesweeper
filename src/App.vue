@@ -13,6 +13,7 @@ const cells = ref([]);
 const numberOfCells = rows.value * column.value;
 const actionsCounter = ref(0);
 const time = ref({ hours: 0, minutes: 0, seconds: 0, maxValueOfTime: 60 });
+const intervalID = ref(0);
 
 function initializeCells() {
   for (let cellIndex = 0; cellIndex < numberOfCells; cellIndex++) {
@@ -43,7 +44,7 @@ function countActions() {
 }
 
 function stopwatch() {
-  setInterval(() => {
+  intervalID.value = setInterval(() => {
     time.value.seconds++;
 
     if (time.value.seconds === time.value.maxValueOfTime) {
@@ -58,6 +59,18 @@ function stopwatch() {
   }, 1000);
 }
 
+function resetBombs() {
+  cells.value.forEach((cell) => {
+    cell.revealed = false;
+    cell.flagged = false;
+    cell.bomb = false;
+    cell.adjacentBombs = 0;
+  });
+  placeBombs();
+  clearInterval(intervalID.value);
+  time.value = { hours: 0, minutes: 0, seconds: 0, maxValueOfTime: 60 };
+}
+
 onMounted(() => {
   initializeCells();
 });
@@ -66,7 +79,11 @@ onMounted(() => {
 <template>
   <body>
     <div class="game">
-      <ScoredBoard :actions-counter="actionsCounter" :time="time" />
+      <ScoredBoard
+        :actions-counter="actionsCounter"
+        :time="time"
+        @reset-bombs-event="resetBombs"
+      />
       <CellsComponent
         :number-of-cells="numberOfCells"
         :cells="cells"
