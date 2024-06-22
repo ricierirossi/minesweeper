@@ -7,7 +7,7 @@
       @click="handleLeftClick(cell)"
       @contextmenu.prevent="handleRightClick(cell)"
     >
-      {{ cell.flagged ? "🚩" : "" }}
+      {{ cell.flagged ? "🚩" : "" }}{{ cell.bomb ? "💣" : "" }}
     </div>
   </div>
 </template>
