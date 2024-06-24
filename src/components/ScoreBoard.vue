@@ -1,7 +1,7 @@
 <template>
   <h1>Minesweeper</h1>
   <div class="container">
-    <p>💣 10</p>
+    <p>💣 {{ remainingBombs }}</p>
     <p @click="newGame" style="cursor: pointer">😄</p>
     <div class="status">
       <p>
@@ -18,6 +18,7 @@
 defineProps({
   actionsCounter: Number,
   time: Object,
+  remainingBombs: Number,
 });
 
 const emit = defineEmits(["newGameEvent"]);

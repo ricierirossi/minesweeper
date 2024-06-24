@@ -1,11 +1,12 @@
 <template>
+  <h1>{{ flaggedCells }}</h1>
   <div class="cells-container">
     <div
       class="cell"
       v-for="(cell, index) of cells"
       :key="index"
       @click="handleLeftClick(cell)"
-      @contextmenu.prevent="handleRightClick(cell)"
+      @contextmenu.prevent="handleRightClick(cell, bombs, flaggedCells)"
     >
       {{ cell.flagged ? "🚩" : "" }}{{ cell.bomb ? "💣" : "" }}
     </div>
@@ -16,12 +17,15 @@
 defineProps({
   numberOfCells: Number,
   cells: Array,
+  bombs: Number,
+  flaggedCells: Number,
 });
 
 const emit = defineEmits([
   "countActionsEvent",
   "startStopwatchEvent",
   "isNewGameEvent",
+  "remainingBombsEvent",
 ]);
 
 function handleLeftClick(cell) {
@@ -29,9 +33,9 @@ function handleLeftClick(cell) {
   revealCell(cell);
 }
 
-function handleRightClick(cell) {
+function handleRightClick(cell, bombs, flaggedCells) {
   startGame();
-  flagCell(cell);
+  flagCell(cell, bombs, flaggedCells);
 }
 
 function startGame() {
@@ -46,10 +50,16 @@ function revealCell(cell) {
   }
 }
 
-function flagCell(cell) {
-  if (!cell.revealed) {
-    cell.flagged = !cell.flagged;
+function flagCell(cell, bombs, flaggedCells) {
+  if (!cell.revealed && !cell.flagged && flaggedCells < bombs) {
+    cell.flagged = true;
+    flaggedCells += 1;
+    console.log(flaggedCells, bombs);
+  } else if (cell.flagged) {
+    cell.flagged = false;
+    flaggedCells -= 1;
   }
+  emit("remainingBombsEvent", flaggedCells);
 }
 </script>
 

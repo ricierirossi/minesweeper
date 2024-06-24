@@ -9,12 +9,14 @@ import { onMounted, ref } from "vue";
 const rows = ref(10);
 const column = ref(10);
 const bombs = ref(10);
+const remainingBombs = ref(bombs.value);
 const cells = ref([]);
+const flaggedCells = ref(0);
 const numberOfCells = rows.value * column.value;
+const newGame = ref(true);
 const actionsCounter = ref(0);
 const time = ref({ hours: 0, minutes: 0, seconds: 0, maxValueOfTime: 60 });
 const intervalID = ref(0);
-const newGame = ref(true);
 
 function initializeCells() {
   for (let cellIndex = 0; cellIndex < numberOfCells; cellIndex++) {
@@ -71,6 +73,8 @@ function startNewGame() {
     cell.adjacentBombs = 0;
   });
   actionsCounter.value = 0;
+  bombs.value = 10;
+  remainingBombs.value = bombs.value;
   placeBombs();
   clearInterval(intervalID.value);
   time.value = { hours: 0, minutes: 0, seconds: 0, maxValueOfTime: 60 };
@@ -87,14 +91,20 @@ onMounted(() => {
       <ScoredBoard
         :actions-counter="actionsCounter"
         :time="time"
+        :remaining-bombs="remainingBombs"
         @new-game-event="startNewGame"
       />
       <CellsComponent
         :number-of-cells="numberOfCells"
         :cells="cells"
+        :bombs="bombs"
+        :flagged-cells="flaggedCells"
         @count-actions-event="countActions"
         @start-stopwatch-event="stopwatch"
         @is-new-game-event="newGame = false"
+        @remaining-bombs-event="
+          (flaggedCells) => (remainingBombs = bombs - flaggedCells.value)
+        "
       />
     </div>
   </body>
