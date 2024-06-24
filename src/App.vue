@@ -14,6 +14,7 @@ const numberOfCells = rows.value * column.value;
 const actionsCounter = ref(0);
 const time = ref({ hours: 0, minutes: 0, seconds: 0, maxValueOfTime: 60 });
 const intervalID = ref(0);
+const newGame = ref(true);
 
 function initializeCells() {
   for (let cellIndex = 0; cellIndex < numberOfCells; cellIndex++) {
@@ -44,28 +45,32 @@ function countActions() {
 }
 
 function stopwatch() {
-  intervalID.value = setInterval(() => {
-    time.value.seconds++;
+  if (newGame.value) {
+    intervalID.value = setInterval(() => {
+      time.value.seconds++;
 
-    if (time.value.seconds === time.value.maxValueOfTime) {
-      time.value.seconds = 0;
-      time.value.minutes++;
-    }
+      if (time.value.seconds === time.value.maxValueOfTime) {
+        time.value.seconds = 0;
+        time.value.minutes++;
+      }
 
-    if (time.value.minutes === time.value.maxValueOfTime) {
-      time.value.minutes = 0;
-      time.value.hours++;
-    }
-  }, 1000);
+      if (time.value.minutes === time.value.maxValueOfTime) {
+        time.value.minutes = 0;
+        time.value.hours++;
+      }
+    }, 1000);
+  }
 }
 
-function resetBombs() {
+function startNewGame() {
+  newGame.value = true;
   cells.value.forEach((cell) => {
     cell.revealed = false;
     cell.flagged = false;
     cell.bomb = false;
     cell.adjacentBombs = 0;
   });
+  actionsCounter.value = 0;
   placeBombs();
   clearInterval(intervalID.value);
   time.value = { hours: 0, minutes: 0, seconds: 0, maxValueOfTime: 60 };
@@ -82,13 +87,14 @@ onMounted(() => {
       <ScoredBoard
         :actions-counter="actionsCounter"
         :time="time"
-        @reset-bombs-event="resetBombs"
+        @new-game-event="startNewGame"
       />
       <CellsComponent
         :number-of-cells="numberOfCells"
         :cells="cells"
         @count-actions-event="countActions"
-        @start-stopwatch-event.once="stopwatch"
+        @start-stopwatch-event="stopwatch"
+        @is-new-game-event="newGame = false"
       />
     </div>
   </body>

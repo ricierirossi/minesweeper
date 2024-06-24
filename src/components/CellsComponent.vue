@@ -18,24 +18,32 @@ defineProps({
   cells: Array,
 });
 
-const emit = defineEmits(["countActionsEvent", "startStopwatchEvent"]);
+const emit = defineEmits([
+  "countActionsEvent",
+  "startStopwatchEvent",
+  "isNewGameEvent",
+]);
 
 function handleLeftClick(cell) {
+  startGame();
+  revealCell(cell);
+}
+
+function handleRightClick(cell) {
+  startGame();
+  flagCell(cell);
+}
+
+function startGame() {
   emit("countActionsEvent");
   emit("startStopwatchEvent");
-  revealCell(cell);
+  emit("isNewGameEvent");
 }
 
 function revealCell(cell) {
   if (!cell.revealed) {
     cell.revealed = !cell.revealed;
   }
-}
-
-function handleRightClick(cell) {
-  emit("countActionsEvent");
-  emit("startStopwatchEvent");
-  flagCell(cell);
 }
 
 function flagCell(cell) {
@@ -56,13 +64,15 @@ function flagCell(cell) {
   height: 72px;
   border: 1px solid #ccc;
   background-color: rgb(133, 127, 127);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .cell:hover {
   cursor: pointer;
   transform: scale(1.2);
   border: 1px solid rgba(0, 0, 0, 0.5);
-  filter: blur(1px);
   background-color: rgb(136, 134, 134);
 }
 </style>
