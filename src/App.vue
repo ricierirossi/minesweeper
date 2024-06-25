@@ -11,7 +11,6 @@ const column = ref(10);
 const bombs = ref(10);
 const remainingBombs = ref(bombs.value);
 const cells = ref([]);
-const flaggedCells = ref(0);
 const numberOfCells = rows.value * column.value;
 const newGame = ref(true);
 const actionsCounter = ref(0);
@@ -64,6 +63,10 @@ function stopwatch() {
   }
 }
 
+function countRemainingBombs(flaggedCells) {
+  remainingBombs.value = bombs.value - flaggedCells;
+}
+
 function startNewGame() {
   newGame.value = true;
   cells.value.forEach((cell) => {
@@ -98,12 +101,12 @@ onMounted(() => {
         :number-of-cells="numberOfCells"
         :cells="cells"
         :bombs="bombs"
-        :flagged-cells="flaggedCells"
+        :new-game="newGame"
         @count-actions-event="countActions"
         @start-stopwatch-event="stopwatch"
         @is-new-game-event="newGame = false"
         @remaining-bombs-event="
-          (flaggedCells) => (remainingBombs = bombs - flaggedCells.value)
+          (flaggedCells) => countRemainingBombs(flaggedCells)
         "
       />
     </div>
