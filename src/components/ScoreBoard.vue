@@ -2,7 +2,17 @@
   <h1>Minesweeper</h1>
   <div class="container">
     <p>💣 {{ remainingBombs }}</p>
-    <p @click="newGame" style="cursor: pointer">😄</p>
+      <p @click="newGame" style="cursor: pointer">
+        <div v-if="gameStatus == 'onGoing'">
+          😄
+        </div>
+        <div v-else-if="gameStatus == 'onAction'">
+          😮
+        </div>
+        <div v-else="gameStatus == 'onGameOver'">
+          😫
+        </div>
+      </p>
     <div class="status">
       <p>
         ⏳ {{ time.hours.toString().padStart(2, "0") }}:{{
@@ -15,7 +25,9 @@
 </template>
 
 <script setup>
-defineProps({
+import { ref } from "vue";
+
+const props = defineProps({
   actionsCounter: Number,
   time: Object,
   remainingBombs: Number,
@@ -23,8 +35,12 @@ defineProps({
 
 const emit = defineEmits(["newGameEvent"]);
 
+const gameStatus = ref("onGoing");
+
 function newGame() {
+  gameStatus.value = 'onAction'
   emit("newGameEvent");
+  gameStatus.value = 'onGoing'
 }
 </script>
 <style scoped>
