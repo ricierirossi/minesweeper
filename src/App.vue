@@ -20,6 +20,7 @@ const intervalID = ref(0);
 function initializeCells() {
   for (let cellIndex = 0; cellIndex < numberOfCells; cellIndex++) {
     cells.value.push({
+      content: "",
       revealed: false,
       flagged: false,
       bomb: false,
@@ -70,6 +71,7 @@ function countRemainingBombs(flaggedCells) {
 function startNewGame() {
   newGame.value = true;
   cells.value.forEach((cell) => {
+    cell.content = "";
     cell.revealed = false;
     cell.flagged = false;
     cell.bomb = false;
