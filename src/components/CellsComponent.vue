@@ -7,7 +7,7 @@
       @click="handleLeftClick(cell)"
       @contextmenu.prevent="handleRightClick(cell, bombs)"
     >
-      {{ cell.flagged ? "🚩" : "" }}{{ cell.bomb ? "💣" : "" }}
+      {{ cell.content }}
     </div>
   </div>
 </template>
@@ -52,14 +52,19 @@ function revealCell(cell) {
   if (!cell.revealed) {
     cell.revealed = !cell.revealed;
   }
+  if (cell.bomb) {
+    cell.content = "💣";
+  }
 }
 
 function flagCell(cell, bombs) {
   if (!cell.revealed && !cell.flagged && flaggedCells.value < bombs) {
     cell.flagged = true;
+    cell.content = "🚩";
     flaggedCells.value += 1;
   } else if (cell.flagged) {
     cell.flagged = false;
+    cell.content = "";
     flaggedCells.value -= 1;
   }
   emit("remainingBombsEvent", flaggedCells.value);
