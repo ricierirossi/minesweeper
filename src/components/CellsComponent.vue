@@ -1,5 +1,5 @@
 <template>
-  <div class="cells-container">
+  <div class="cells-container" :style="{}">
     <div
       class="cell"
       v-for="(cell, index) of cells"
@@ -16,6 +16,7 @@
 import { onUpdated, ref } from "vue";
 
 const props = defineProps({
+  columns: Number,
   numberOfCells: Number,
   cells: Array,
   bombs: Number,
@@ -82,19 +83,21 @@ onUpdated(() => {
 </script>
 
 <style scoped>
-.cells-container {
+/* .cells-container {
   display: flex;
   flex-wrap: wrap;
-}
+}*/
 
 .cell {
-  width: 72px;
-  height: 72px;
   border: 1px solid #ccc;
   background-color: rgb(133, 127, 127);
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.cells-container {
+  display: grid;
 }
 
 .cell:hover {

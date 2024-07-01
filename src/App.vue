@@ -7,11 +7,11 @@ import ScoredBoard from "./components/ScoreBoard.vue";
 import { onMounted, ref } from "vue";
 
 const rows = ref(10);
-const column = ref(10);
+const columns = ref(10);
 const bombs = ref(10);
 const remainingBombs = ref(bombs.value);
 const cells = ref([]);
-const numberOfCells = rows.value * column.value;
+const numberOfCells = rows.value * columns.value;
 const newGame = ref(true);
 const actionsCounter = ref(0);
 const time = ref({ hours: 0, minutes: 0, seconds: 0, maxValueOfTime: 60 });
@@ -100,6 +100,7 @@ onMounted(() => {
         @new-game-event="startNewGame"
       />
       <CellsComponent
+        :columns="columns"
         :number-of-cells="numberOfCells"
         :cells="cells"
         :bombs="bombs"
