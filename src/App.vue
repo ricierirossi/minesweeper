@@ -101,6 +101,7 @@ onMounted(() => {
       />
       <CellsComponent
         :columns="columns"
+        :rows="rows"
         :number-of-cells="numberOfCells"
         :cells="cells"
         :bombs="bombs"

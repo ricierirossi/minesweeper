@@ -1,10 +1,16 @@
 <template>
-  <div class="cells-container" :style="{}">
+  <div
+    class="cells-container"
+    :style="{
+      'grid-template-columns': 'repeat(' + columns + ', 72px)',
+      'grid-template-rows': 'repeat(' + rows + ', 72px)',
+    }"
+  >
     <div
       class="cell"
       v-for="(cell, index) of cells"
       :key="index"
-      @click="handleLeftClick(cell)"
+      @click="handleLeftClick(cell, index, rows, columns)"
       @contextmenu.prevent="handleRightClick(cell, bombs)"
     >
       {{ cell.content }}
@@ -15,16 +21,17 @@
 <script setup>
 import { onUpdated, ref } from "vue";
 
+const flaggedCells = ref(0);
+
 const props = defineProps({
   columns: Number,
+  rows: Number,
   numberOfCells: Number,
   cells: Array,
   bombs: Number,
   flaggedCells: Number,
   newGame: Boolean,
 });
-
-const flaggedCells = ref(0);
 
 const emit = defineEmits([
   "countActionsEvent",
@@ -33,9 +40,10 @@ const emit = defineEmits([
   "remainingBombsEvent",
 ]);
 
-function handleLeftClick(cell) {
+function handleLeftClick(cell, index, rows, columns) {
   startGame();
   revealCell(cell);
+  calculateAdjacentBombs(cell, index, rows, columns);
 }
 
 function handleRightClick(cell, bombs) {
@@ -77,16 +85,52 @@ function resetFlags() {
   }
 }
 
+function getAdjacentIndexes(index, rows, columns) {
+  const currentRow = Math.floor(index / rows);
+  const currentCol = index % columns;
+  const adjacentIndexes = [];
+
+  const directions = [
+    [-1, -1],
+    [-1, 0],
+    [-1, 1],
+    [0, -1],
+    [0, 1],
+    [1, -1],
+    [1, 0],
+    [1, 1],
+  ];
+
+  directions.forEach((direction) => {
+    const newRow = currentRow + direction[0];
+    const newCol = currentCol + direction[1];
+
+    if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < columns) {
+      adjacentIndexes.push(newRow * rows + newCol);
+    }
+  });
+
+  return adjacentIndexes;
+}
+
+function calculateAdjacentBombs(cell, index, rows, columns) {
+  const adjacentCells = getAdjacentIndexes(index, rows, columns);
+  adjacentCells.forEach((adjacentCell) => {
+    if (props.cells[adjacentCell].bomb) {
+      cell.adjacentBombs += 1;
+    }
+  });
+}
+
 onUpdated(() => {
   resetFlags();
 });
 </script>
 
 <style scoped>
-/* .cells-container {
-  display: flex;
-  flex-wrap: wrap;
-}*/
+.cells-container {
+  display: grid;
+}
 
 .cell {
   border: 1px solid #ccc;
@@ -96,14 +140,10 @@ onUpdated(() => {
   align-items: center;
 }
 
-.cells-container {
-  display: grid;
-}
-
 .cell:hover {
   cursor: pointer;
   transform: scale(1.2);
-  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-color: rgba(0, 0, 0, 0.5);
   background-color: rgb(136, 134, 134);
 }
 </style>
