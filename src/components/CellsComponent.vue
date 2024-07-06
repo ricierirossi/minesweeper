@@ -22,6 +22,7 @@
 import { onUpdated, ref } from "vue";
 
 const flaggedCells = ref(0);
+const adja = ref(0);
 
 const props = defineProps({
   columns: Number,
@@ -58,11 +59,14 @@ function startGame() {
 }
 
 function revealCell(cell) {
-  if (!cell.revealed) {
-    cell.revealed = !cell.revealed;
+  if (cell.revealed === false) {
+    cell.revealed = true;
   }
   if (cell.bomb) {
     cell.content = "💣";
+  }
+  if (cell.bomb === false) {
+    cell.content = adja.value;
   }
 }
 
@@ -83,6 +87,17 @@ function resetFlags() {
   if (props.newGame) {
     flaggedCells.value = 0;
   }
+}
+
+function calculateAdjacentBombs(cell, index, rows, columns) {
+  const adjacentCells = getAdjacentIndexes(index, rows, columns);
+  adjacentCells.forEach((adjacentCell) => {
+    if (props.cells[adjacentCell].bomb) {
+      cell.adjacentBombs += 1;
+    }
+  });
+  adja.value = cell.adjacentBombs;
+  console.log(adja.value);
 }
 
 function getAdjacentIndexes(index, rows, columns) {
@@ -109,17 +124,7 @@ function getAdjacentIndexes(index, rows, columns) {
       adjacentIndexes.push(newRow * rows + newCol);
     }
   });
-
   return adjacentIndexes;
-}
-
-function calculateAdjacentBombs(cell, index, rows, columns) {
-  const adjacentCells = getAdjacentIndexes(index, rows, columns);
-  adjacentCells.forEach((adjacentCell) => {
-    if (props.cells[adjacentCell].bomb) {
-      cell.adjacentBombs += 1;
-    }
-  });
 }
 
 onUpdated(() => {
