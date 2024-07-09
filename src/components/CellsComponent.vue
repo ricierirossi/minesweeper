@@ -22,7 +22,6 @@
 import { onUpdated, ref } from "vue";
 
 const flaggedCells = ref(0);
-const adja = ref(0);
 
 const props = defineProps({
   columns: Number,
@@ -43,8 +42,8 @@ const emit = defineEmits([
 
 function handleLeftClick(cell, index, rows, columns) {
   startGame();
-  revealCell(cell);
-  calculateAdjacentBombs(cell, index, rows, columns);
+  revealCell(cell, index, rows, columns);
+  // calculateAdjacentBombs(cell, index, rows, columns);
 }
 
 function handleRightClick(cell, bombs) {
@@ -58,15 +57,16 @@ function startGame() {
   emit("isNewGameEvent");
 }
 
-function revealCell(cell) {
+function revealCell(cell, index, rows, columns) {
   if (cell.revealed === false) {
+    calculateAdjacentBombs(cell, index, rows, columns);
     cell.revealed = true;
   }
   if (cell.bomb) {
     cell.content = "💣";
   }
   if (cell.bomb === false) {
-    cell.content = adja.value;
+    cell.content = cell.adjacentBombs;
   }
 }
 
@@ -96,8 +96,6 @@ function calculateAdjacentBombs(cell, index, rows, columns) {
       cell.adjacentBombs += 1;
     }
   });
-  adja.value = cell.adjacentBombs;
-  console.log(adja.value);
 }
 
 function getAdjacentIndexes(index, rows, columns) {
