@@ -8,6 +8,7 @@
   >
     <div
       class="cell"
+      :class="{ revealed: cell.revealed }"
       v-for="(cell, index) of cells"
       :key="index"
       @click="handleLeftClick(cell, index, rows, columns)"
@@ -43,7 +44,6 @@ const emit = defineEmits([
 function handleLeftClick(cell, index, rows, columns) {
   startGame();
   revealCell(cell, index, rows, columns);
-  // calculateAdjacentBombs(cell, index, rows, columns);
 }
 
 function handleRightClick(cell, bombs) {
@@ -58,15 +58,17 @@ function startGame() {
 }
 
 function revealCell(cell, index, rows, columns) {
-  if (cell.revealed === false) {
+  if (cell.revealed === false && cell.bomb === false) {
     calculateAdjacentBombs(cell, index, rows, columns);
+    if (cell.adjacentBombs > 0) {
+      cell.content = cell.adjacentBombs;
+    }
     cell.revealed = true;
+    revealAdjacentCells(cell);
   }
   if (cell.bomb) {
     cell.content = "💣";
-  }
-  if (cell.bomb === false) {
-    cell.content = cell.adjacentBombs;
+    cell.revealed = true;
   }
 }
 
@@ -91,6 +93,7 @@ function resetFlags() {
 
 function calculateAdjacentBombs(cell, index, rows, columns) {
   const adjacentCells = getAdjacentIndexes(index, rows, columns);
+  cell.adjacent = adjacentCells;
   adjacentCells.forEach((adjacentCell) => {
     if (props.cells[adjacentCell].bomb) {
       cell.adjacentBombs += 1;
@@ -125,6 +128,14 @@ function getAdjacentIndexes(index, rows, columns) {
   return adjacentIndexes;
 }
 
+function revealAdjacentCells(cell) {
+  cell.adjacent.forEach((adj) => {
+    if (cell.adjacentBombs === 0 && props.cells[adj]) {
+      props.cells[adj].revealed = true;
+    }
+  });
+}
+
 onUpdated(() => {
   resetFlags();
 });
@@ -148,5 +159,9 @@ onUpdated(() => {
   transform: scale(1.2);
   border-color: rgba(0, 0, 0, 0.5);
   background-color: rgb(136, 134, 134);
+}
+
+.revealed {
+  background-color: goldenrod;
 }
 </style>
