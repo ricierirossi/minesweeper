@@ -108,6 +108,7 @@ onMounted(() => {
         :new-game="newGame"
         @count-actions-event="countActions"
         @start-stopwatch-event="stopwatch"
+        @new-game-event="startNewGame"
         @is-new-game-event="newGame = false"
         @remaining-bombs-event="
           (flaggedCells) => countRemainingBombs(flaggedCells)

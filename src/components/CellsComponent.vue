@@ -38,6 +38,7 @@ const emit = defineEmits([
   "countActionsEvent",
   "startStopwatchEvent",
   "isNewGameEvent",
+  "newGameEvent",
   "remainingBombsEvent",
 ]);
 
@@ -69,6 +70,7 @@ function revealCell(cell, index, rows, columns) {
   if (cell.bomb) {
     cell.content = "💣";
     cell.revealed = true;
+    gameOver();
   }
 }
 
@@ -134,6 +136,11 @@ function revealAdjacentCells(cell) {
       props.cells[adj].revealed = true;
     }
   });
+}
+
+function gameOver() {
+  alert("Game over");
+  emit("newGameEvent");
 }
 
 onUpdated(() => {
